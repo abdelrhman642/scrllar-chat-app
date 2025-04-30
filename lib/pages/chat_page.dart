@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chhat_app/constans.dart';
 import 'package:chhat_app/model/message.dart';
 import 'package:chhat_app/widgets/chat_buble.dart';
@@ -8,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatPage extends StatelessWidget {
   static String id = 'ChatPage';
   TextEditingController controller = TextEditingController();
+  final _controller = ScrollController();
 
   CollectionReference massages = FirebaseFirestore.instance.collection(
     KMessageCollection,
@@ -15,13 +18,14 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-      future: massages.get(),
+    String email = ModalRoute.of(context)!.settings.arguments as String;
+    return StreamBuilder<QuerySnapshot>(
+      stream: massages.orderBy(KCreatedAt, descending: true).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Message> massagesList = [];
-          for (int i = 0; i < (snapshot.data?. docs. length??0); i++) {
-            massagesList. add (Message. fromJson(snapshot.data?.docs [i].data()));
+          for (int i = 0; i < (snapshot.data?.docs.length ?? 0); i++) {
+            massagesList.add(Message.fromJson(snapshot.data?.docs[i].data()));
           }
           return Scaffold(
             appBar: AppBar(
@@ -46,11 +50,13 @@ class ChatPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    reverse: true,
+                    controller: _controller,
                     itemCount: massagesList.length,
                     itemBuilder: (context, index) {
-                      return ChatBuble(
-                        massage: massagesList[index],
-                        );
+                      return massagesList[index].id == email
+                          ? ChatBuble(massage: massagesList[index])
+                          : ChatBubleFromFriend(massage: massagesList[index]);
                     },
                   ),
                 ),
@@ -62,12 +68,18 @@ class ChatPage extends StatelessWidget {
                       controller: controller,
                       onSubmitted: (data) {
                         massages.add({
-                          'massage': data,
-                          'time': DateTime.now(),
+                          KMessage: data,
+                          KCreatedAt: DateTime.now(),
                           'user':
                               FirebaseAuth.instance.currentUser?.email ?? '',
                         });
                         controller.clear();
+
+                        _controller.animateTo(
+                          0,
+                          curve: Curves.easeIn,
+                          duration: const Duration(milliseconds: 500),
+                        );
                       },
                       decoration: InputDecoration(
                         hintText: 'Enter Your Massage',
@@ -93,4 +105,4 @@ class ChatPage extends StatelessWidget {
       },
     );
   }
-} 
+}

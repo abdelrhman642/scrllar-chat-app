@@ -72,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 10),
                 CustomFromTextFiled(
+                  isPassword: true,
                   onChanged: (data) {
                     password = data;
                   },
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         await loginUser();
                         // نحط الـ success هنا جوه ال try بعد ما الـ loginUser تخلص من غير Errors
-                        Navigator.pushNamed(context, ChatPage.id);
+                        Navigator.pushNamed(context, ChatPage.id,arguments: email );
                       } on FirebaseAuthException catch (ex) {
                         showSnackBar(
                           context,
