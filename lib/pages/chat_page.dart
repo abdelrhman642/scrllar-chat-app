@@ -20,8 +20,8 @@ class ChatPage extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Message> massagesList = [];
-          for (int i = 0; i < snapshot.data!.docs.length; i++) {
-            massagesList.add(Message.fromJson(snapshot.data!.docs[i]));
+          for (int i = 0; i < (snapshot.data?. docs. length??0); i++) {
+            massagesList. add (Message. fromJson(snapshot.data?.docs [i].data));
           }
           return Scaffold(
             appBar: AppBar(
@@ -48,7 +48,9 @@ class ChatPage extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: massagesList.length,
                     itemBuilder: (context, index) {
-                      return ChatBuble();
+                      return ChatBuble(
+                        massage: massagesList[index],
+                        );
                     },
                   ),
                 ),
@@ -91,4 +93,4 @@ class ChatPage extends StatelessWidget {
       },
     );
   }
-}
+} 
