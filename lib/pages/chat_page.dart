@@ -21,7 +21,7 @@ class ChatPage extends StatelessWidget {
         if (snapshot.hasData) {
           List<Message> massagesList = [];
           for (int i = 0; i < (snapshot.data?. docs. length??0); i++) {
-            massagesList. add (Message. fromJson(snapshot.data?.docs [i].data));
+            massagesList. add (Message. fromJson(snapshot.data?.docs [i].data()));
           }
           return Scaffold(
             appBar: AppBar(
