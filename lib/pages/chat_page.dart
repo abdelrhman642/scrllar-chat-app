@@ -16,6 +16,22 @@ class ChatPage extends StatelessWidget {
     KMessageCollection,
   );
 
+  send() {
+     massages.add({
+                          KMessage: controller.text,
+                          KCreatedAt: DateTime.now(),
+                          'user':
+                              FirebaseAuth.instance.currentUser?.email ?? '',
+                        });
+                        controller.clear();
+
+                        _controller.animateTo(
+                          0,
+                          curve: Curves.easeIn,
+                          duration: const Duration(milliseconds: 500),
+                        );
+  }
+
   @override
   Widget build(BuildContext context) {
     String email = ModalRoute.of(context)!.settings.arguments as String;
@@ -54,7 +70,7 @@ class ChatPage extends StatelessWidget {
                     controller: _controller,
                     itemCount: massagesList.length,
                     itemBuilder: (context, index) {
-                      return massagesList[index].id == email
+                      return massagesList[index].email == email
                           ? ChatBuble(massage: massagesList[index])
                           : ChatBubleFromFriend(massage: massagesList[index]);
                     },
@@ -66,24 +82,13 @@ class ChatPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: TextField(
                       controller: controller,
-                      onSubmitted: (data) {
-                        massages.add({
-                          KMessage: data,
-                          KCreatedAt: DateTime.now(),
-                          'user':
-                              FirebaseAuth.instance.currentUser?.email ?? '',
-                        });
-                        controller.clear();
-
-                        _controller.animateTo(
-                          0,
-                          curve: Curves.easeIn,
-                          duration: const Duration(milliseconds: 500),
-                        );
-                      },
+                      onSubmitted:(_)=> send(),
                       decoration: InputDecoration(
                         hintText: 'Enter Your Massage',
-                        suffixIcon: Icon(Icons.send, color: KprimaryColor),
+                        suffixIcon: GestureDetector(
+                          onTap: send,
+                          child: Icon(Icons.send, color: KprimaryColor),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(color: KprimaryColor),

@@ -23,7 +23,7 @@ final Message massage;
         ),
 
         child: Text(
-          massage.massage,
+          massage.massage??'',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -59,7 +59,7 @@ final Message massage;
         ),
 
         child: Text(
-          massage.massage,
+          massage.massage??'',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

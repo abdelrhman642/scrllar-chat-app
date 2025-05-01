@@ -89,8 +89,7 @@ class _ResgisterPageState extends State<ResgisterPage> {
                         await resgiserUser(
                           
                         );
-                        Navigator.pushNamed(context, ChatPage.id);
-                        // showSnackBar(context, 'Success', color: Colors.green);
+                        Navigator.pushNamed(context, ChatPage.id,arguments: email);
                       } on FirebaseAuthException catch (ex) {
                         if (ex.code == 'weak-password') {
                           showSnackBar(
